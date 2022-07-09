@@ -8,10 +8,10 @@ import Signup from './src/pages/Signup';
 import Login from './src/pages/Login';
 
 type RootStackParamList = {
-  Home: { userId: string };
-  FoodInput: undefined;
-  Login: undefined;
-  Signup: undefined;
+  [HOMEPAGE_ROUTE]: ({ userId: string })
+  [FOODINPUT_ROUTE]: undefined;
+  [LOGIN_ROUTE]: undefined;
+  [SIGNUP_ROUTE]: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -26,7 +26,6 @@ export default function App() {
         <Stack.Screen name={HOMEPAGE_ROUTE} component={HomePage}/>
         <Stack.Screen name={FOODINPUT_ROUTE} component={FoodInput}/>
       </Stack.Navigator>
-    </NavigationContainer>
-    
+    </NavigationContainer>    
   );
 }
