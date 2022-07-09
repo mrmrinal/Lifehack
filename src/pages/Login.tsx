@@ -7,7 +7,7 @@ export default function Login() {
     <ScrollView>
       <View>
         <Image 
-          source={require('./src/assets/fooders.png')}
+          source={require('../assets/fooders.png')}
           resizeMode="center"
           style={styles.image} 
           />

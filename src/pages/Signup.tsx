@@ -7,7 +7,7 @@ export default function Signup() {
     <ScrollView>
       <View style={{marginTop: 30}}>
         <Image 
-          source={require('./src/assets/fridge.png')}
+          source={require('../assets/fridge.png')}
           resizeMode="center"
           style={styles.image} 
           />
