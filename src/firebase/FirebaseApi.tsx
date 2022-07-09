@@ -14,10 +14,14 @@ import {
 } from "firebase/firestore";
 // Authentication
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
+// Storage
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 // API Key
 import { firebaseConfig } from "../../Constants";
+// Misc
 import { UserInStore, FoodItem, UserFoodItem, userInStoreConverter, userFoodItemConverter } from "../Interfaces";
 import { FOODS_COLLECTION_ID, USERS_COLLECTION_ID } from "../AppConstants";
+import { v4 as uuid } from 'uuid';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -37,6 +41,9 @@ const usersRef = (uid: string) => doc(db, USERS_COLLECTION_ID, uid).withConverte
 
 //-------------------Firebase Auth References-------------------
 const auth = getAuth()
+
+//-------------------Firebase Storage References-------------------
+const storage = getStorage()
 
 //-------------------Firestore Foods Methods-------------------
 
@@ -151,4 +158,24 @@ export const signUp = async (name: string, email: string, password: string, succ
     })
   .then(() => success?.(user))
   })
+}
+
+function getCurrentUserUid (): string | undefined {
+  return auth.currentUser?.uid
+}
+
+//-------------------Firestore Storage Buckets Methods-------------------
+export const uploadImage = async (uri: string) => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const foodStorageRef = ref(storage, `${getCurrentUserUid()}/${uuid()}`)
+    const usedRef = await uploadBytes(foodStorageRef, blob).then((snapshot) => {
+      console.info('Uploaded Image!')
+      return snapshot.ref
+    })
+    return await getDownloadURL(usedRef)
+  } catch (err: any) {
+    console.error('uploadImage error: ' + err.message); 
+  }
 }
