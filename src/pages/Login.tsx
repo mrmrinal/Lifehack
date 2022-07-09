@@ -18,12 +18,12 @@ export default function Login() {
           <Inputs name="Email" icon="user"/>
           <Inputs name="Password" icon="lock" pass={true} />
           </View>
-          <View style={{marginTop: 20, width: 300, marginLeft: 30}}>
+          <View style={{marginTop: 20, width: 300, alignSelf:'center', justifyContent:'center'}}>
           <Button 
           title="Login"
           />
           </View>
-          <View style={{marginTop: 20, width: 300, marginLeft: 30}}>
+          <View style={{marginTop: 20, width: 300, alignSelf:'center', justifyContent:'center'}}>
           <Button 
           title="Or create an account here!"
           />
@@ -48,12 +48,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Foundation',
     fontSize: 40,
     marginVertical: 10,
-    marginLeft: 40
+    alignSelf:'center'
   },
   textBody: {
     fontFamily: 'Foundation',
     fontSize: 16,
-    marginLeft: 60
+    alignSelf:'center'
   }
 
 });
