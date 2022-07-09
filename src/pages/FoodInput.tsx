@@ -1,35 +1,16 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, TextInput, SafeAreaView, Platform } from 'react-native';
+import { Alert, StyleSheet, Text, View, Button, TextInput, SafeAreaView, Platform, Modal, ImageBackground} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Camera } from 'expo-camera';
 import { ShareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library'
 import { StatusBar } from 'expo-status-bar';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function FoodInput() {
     const [date, setDate] = useState(new Date());
     const [dateText, setDateText] = useState('Select the expiry date') 
     const [foodName, setFoodName] = useState('');
-
-    let cameraRef = useRef();
-    const [hasCameraPermission, setHasCameraPermission] = useState();
-    const [hasGalleryPermission, setHasGalleryPermission] = useState();
-    const [photo, setPhoto] = useState();
-
-    useEffect(() => {
-        (async () => {
-            const cameraPermission = await Camera.requestCameraPermissionsAsync();
-            const galleryPermission = await MediaLibrary.requestPermissionsAsync();
-            setHasCameraPermission(cameraPermission.status === "granted");
-            setHasGalleryPermission(galleryPermission.status === "granted");
-        })();
-    }, [])
-
-    if (hasCameraPermission === undefined) {
-        return <Text>Requesting permissions... </Text>
-    } else if (hasCameraPermission === false) {
-        return <Text>Permission Denied. Change in settings</Text>
-    } 
 
     const onChange = (event:Event, selectedDate:Date) => {
         const currentDate:Date = selectedDate || date;
@@ -37,22 +18,8 @@ export default function FoodInput() {
 
         let tempDate = new Date(currentDate)
         let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-        setDateText('Selected Date: ' + fDate)
+        setDateText('Expiry Date: ' + fDate)
     }
-
-    let takePic = async () => {
-        let options = {
-          quality: 1,
-          base64: true,
-          exif: false
-        };
-    
-        let newPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhoto(newPhoto);
-    };
-
-
-
 
     return (
         <View style={styles.container}>
@@ -76,35 +43,56 @@ export default function FoodInput() {
 
 
                 <View style={styles.viewPaired}>
-                    <View style={styles.twoButtonContainer}>
-                      <Button title="Take a Picture"/>
+                    <View style={styles.twoButtonContainer} > 
+                      <Button title="Take a Picture" onPress={() => captureImage()}/>
                     </View>
-                    <View style={styles.twoButtonContainer}>
-                      <Button title="Upload a Picture"/>
+                    <View style={styles.twoButtonContainer} >
+                      <Button title="Upload a Picture" onPress = {() => uploadImage()}/>
                     </View>
                 </View>
-
-                
-                {/* <Camera ref={cameraRef}>
-                  <View style={styles.buttonContainer}>
-                    <Button title="Take Pic" onPress={takePic} />
-                  </View>
-                  <StatusBar style="auto" />
-                </Camera> */}
             </View>
-
-
-            
-            
-
-
-
-        
-
         </View>
     )
 
 }
+
+const captureImage = () => {
+    ImagePicker
+    .requestCameraPermissionsAsync()
+    .then(cameraRollPerm => {
+      // only if user allows permission to camera roll
+      if (cameraRollPerm.granted) {
+        ImagePicker
+        .launchCameraAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+        })
+        .catch(console.error)
+      } else {
+          Alert.alert('Provide access to camera and photos in settings');
+      }
+    })
+    .catch(console.error);
+  };
+
+const uploadImage = () => {
+  ImagePicker
+  .requestCameraPermissionsAsync()
+  .then(cameraRollPerm => {
+    // only if user allows permission to camera roll
+    if (cameraRollPerm.granted) {
+      ImagePicker
+      .launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      })
+      .catch(console.error)
+    } else {
+        Alert.alert('We need permission to go further!');
+    }
+  })
+  .catch(console.error);
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -145,6 +133,10 @@ const styles = StyleSheet.create({
     },
     twoButtonContainer: {
         flex: 1,
+    }, 
+    modalView: {
+        justifyContent: 'center',
+        minHeight:500
     }
     
   });
