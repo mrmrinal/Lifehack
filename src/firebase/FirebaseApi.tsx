@@ -145,10 +145,10 @@ export const login = async(email: string, password: string, success_callback: (u
 export const signUp = async (name: string, email: string, password: string, success?: (user: UserCredential) => void) => {
   await createUserWithEmailAndPassword(auth, email, password)
   .then(async (user: UserCredential) => {
-    await addAuthenticatedUserAfterSignup(user.user.uid, {
+    await addAuthenticatedUserAfterSignup({
       email: email,
       name: name,
     })
-  .then((user) => success?.(user))
+  .then(() => success?.(user))
   })
 }
