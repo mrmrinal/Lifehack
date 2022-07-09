@@ -5,7 +5,7 @@ import styles from '../styles/styles'
 import CustomInput from '../components/customInput'
 import Spacer from '../components/spacer'
 import Category from '../components/category'
-import Transaction from '../components/transaction'
+// import Transaction from '../components/transaction'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
 
@@ -39,12 +39,12 @@ export default function HomeScreen()  {
             <Spacer height={20} />
             <Text style={values.h2Style}>Recipes</Text>
             <Spacer height={20} />
-            <FlatList
+            {/* <FlatList
                 
                 data={transactions}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <Transaction transaction={item} onPress={(val) => console.warn(`Clicked ${val}`)} />}
+                renderItem={({ item }) => <Transaction transaction={item} onPress={(val) => console.warn(`Clicked ${val}`)} />} */}
             />
         </View>
       

@@ -165,6 +165,12 @@ function getCurrentUserUid (): string | undefined {
 }
 
 //-------------------Firestore Storage Buckets Methods-------------------
+/**
+ * Returns a URL where the Image is Uploaded to a firebase storage bucket
+ * 
+ * @param uri URI for current image location
+ * @returns URL String for Image
+ */
 export const uploadImage = async (uri: string) => {
   try {
     const response = await fetch(uri);
