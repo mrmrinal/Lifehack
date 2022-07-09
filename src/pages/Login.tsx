@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import Inputs from '../components/Inputs';
-import Submit from '../components/Submit';
 import { Button } from 'react-native-elements';
 export default function Login() {
   return (
@@ -18,10 +17,6 @@ export default function Login() {
           <View style={{marginLeft: 20}}>
           <Inputs name="Email" icon="user"/>
           <Inputs name="Password" icon="lock" pass={true} />
-          </View>
-          <View style={{width: '90%'}}>
-              <Text style={[styles.textBody], {alignSelf: 'flex-end'}}
-              >Forgot Password?</Text>
           </View>
           <View style={{marginTop: 20, width: 300, marginLeft: 30}}>
           <Button 
