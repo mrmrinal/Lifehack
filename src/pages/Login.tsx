@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import {Button, ScrollView, StyleSheet, Text, View, Image, KeyboardAvoidingView, TextInput, Platform, TouchableOpacity } from 'react-native';
+import {Button, ScrollView, StyleSheet, Text, View, Image, KeyboardAvoidingView, TextInput, Platform, TouchableOpacity, Alert } from 'react-native';
+import { Input } from 'react-native-elements';
+import { HOMEPAGE_ROUTE, SIGNUP_ROUTE } from '../AppConstants';
 import Inputs from '../components/Inputs';
+import { login } from '../firebase/FirebaseApi';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
-  const onPressLogin = () => {}
+  const onPressLogin = async () => {
+    try {
+      await login(email, password, (userCred) => {
+        console.info('login successful');
+        const user = userCred.user;
+        navigation.navigate(HOMEPAGE_ROUTE);
+      })
+    } catch (e) {
+      Alert.alert("Incorrect Login Details", "Try again")
+    }
+  }
   return (
     <ScrollView>
       <KeyboardAvoidingView 
@@ -16,15 +29,15 @@ export default function Login({ navigation }) {
         <Image 
           source={require('../assets/fooders.png')}
           resizeMode="center"
-          style={styles.image} 
+          style={styles.image}
           />
           <View style={styles.container}>
-            <Text style={styles.textTitle}>Welcome back!</Text>
+            <Text style={styles.textTitle}>Welcome Back !</Text>
           </View>
           <View style={{marginTop: 20}} />
           <View style={{marginLeft: 20}}>
-          <Inputs name="Email" icon="user"/>
-          <Inputs name="Password" icon="lock" pass={true} />
+          <Input autoCompleteType={"email"} placeholder="Email" onChangeText={setEmail}/>
+          <Input secureTextEntry autoCompleteType={"password"} placeholder="Password" onChangeText={setPassword} />
           </View>
           <View style={[styles.container]}>
             <Button
@@ -33,7 +46,7 @@ export default function Login({ navigation }) {
               />
           </View>
           <View style={[styles.container, {marginTop:'6%'}]}>
-            <Button onPress={() => navigation.navigate('Signup')}
+            <Button onPress={() => navigation.navigate(SIGNUP_ROUTE)}
               title="Or create an account here!"
               />
           </View>

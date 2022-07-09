@@ -1,16 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet, Text, View, Image, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import Inputs from '../components/Inputs';
-import { Button } from 'react-native-elements';
-import React from 'react';
-export default function Signup() {
+import { Button, Input } from 'react-native-elements';
+import React, { useState } from 'react';
+import { signUp } from '../firebase/FirebaseApi';
+import { HOMEPAGE_ROUTE } from '../AppConstants';
+export default function Signup({ navigation }) {
+  const [name, setName] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const onSignup = async () => {
+    try {
+      await signUp(name, email, password, (userCred) => {
+
+      console.info('sign up successful');
+      navigation.navigate(HOMEPAGE_ROUTE);
+      })
+    } catch (e) {
+      if (e.message.toLowerCase().startsWith("firebase")) {
+        Alert.alert("Incorrect Sign Up Details", e.message);
+      } else {
+        console.error(e)
+      }
+    }
+  }
   return (
     <ScrollView>
-      <View style={{marginTop: 30}}>
       <KeyboardAvoidingView 
           enabled={true}
           behavior={"position"}
           >
+      <View style={{marginTop: 30}}>
         <Image 
           source={require('../assets/fridge.png')}
           resizeMode="center"
@@ -19,18 +40,18 @@ export default function Signup() {
           <Text style={styles.textBody}>Create your own account!</Text>
           <View style={{marginTop: 20}} />
           <View style={{marginLeft: 20}}>
-          <Inputs name="Name" icon="address-book"/>
-          <Inputs name="Email" icon="user"/>
-          <Inputs name="Password" icon="lock" pass={true} />
-          <Inputs name="Confirm Password" icon="lock" pass={true} />
+            <Input autoCompleteType={"name"} placeholder="Name" onChangeText={setName}/>
+            <Input autoCompleteType={"email"} placeholder="Email" onChangeText={setEmail} />  
+            <Input secureTextEntry autoCompleteType={"password"} placeholder="Password" onChangeText={setPassword} />
           </View>
           <View style={{marginTop: 20, width: 300, marginLeft: 30}}>
           <Button 
-          title="Create an account!"
+            onPress={onSignup}
+            title="Create an account!"
           />
           </View>
-        </KeyboardAvoidingView>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
@@ -57,3 +78,7 @@ const styles = StyleSheet.create({
   }
 
 });
+function e(e: any) {
+  throw new Error('Function not implemented.');
+}
+
