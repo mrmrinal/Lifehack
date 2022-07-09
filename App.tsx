@@ -19,8 +19,8 @@ const Stack = createStackNavigator<RootStackParamList>();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login}/>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Login" component={FoodInput}/>
         <Stack.Screen name="Signup" component={Signup}/>
         <Stack.Screen name="Home" component={HomePage}/>
         <Stack.Screen name="Foodinput" component={FoodInput}/>
@@ -36,5 +36,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }, 
 });
