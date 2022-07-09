@@ -10,6 +10,8 @@ import Login from './src/pages/Login';
 type RootStackParamList = {
   Home: { userId: string };
   Foodinput: undefined;
+  Login: undefined;
+  Signup: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
