@@ -1,11 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image, KeyboardAvoidingView } from 'react-native';
 import Inputs from '../components/Inputs';
 import { Button } from 'react-native-elements';
+import React from 'react';
 export default function Signup() {
   return (
     <ScrollView>
       <View style={{marginTop: 30}}>
+      <KeyboardAvoidingView 
+          enabled={true}
+          behavior={"position"}
+          >
         <Image 
           source={require('../assets/fridge.png')}
           resizeMode="center"
@@ -24,6 +29,7 @@ export default function Signup() {
           title="Create an account!"
           />
           </View>
+        </KeyboardAvoidingView>
       </View>
     </ScrollView>
   );
@@ -41,13 +47,11 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   textTitle: {
-    fontFamily: 'Foundation',
     fontSize: 40,
     marginVertical: 10,
     marginLeft: 40
   },
   textBody: {
-    fontFamily: 'Foundation',
     fontSize: 16,
     marginLeft: 60
   }

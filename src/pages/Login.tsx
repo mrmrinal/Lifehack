@@ -1,36 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import {Button, ScrollView, StyleSheet, Text, View, Image, Alert } from 'react-native';
+import React, { useState } from 'react';
+import {Button, ScrollView, StyleSheet, Text, View, Image, KeyboardAvoidingView, TextInput, Platform, TouchableOpacity } from 'react-native';
 import Inputs from '../components/Inputs';
-import Signup from './Signup';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+
 export default function Login({ navigation }) {
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const onPressLogin = () => {}
   return (
     <ScrollView>
-      <View>
+      <KeyboardAvoidingView 
+          enabled={true}
+          behavior={"position"}
+          >
         <Image 
           source={require('../assets/fooders.png')}
           resizeMode="center"
           style={styles.image} 
           />
-          <Text style={styles.textTitle}>Welcome back!</Text>
-          <Text style={styles.textBody}>Log in to your existing account!</Text>
+          <View style={styles.container}>
+            <Text style={styles.textTitle}>Welcome back!</Text>
+          </View>
           <View style={{marginTop: 20}} />
           <View style={{marginLeft: 20}}>
           <Inputs name="Email" icon="user"/>
           <Inputs name="Password" icon="lock" pass={true} />
           </View>
-          <View style={{marginTop: 20, width: 300, alignSelf:'center', justifyContent:'center'}}>
-          <Button 
-          title="Login"
-          />
+          <View style={[styles.container]}>
+            <Button
+              onPress={() => onPressLogin()}
+              title="Login"
+              />
           </View>
-          <View style={{marginTop: 20, width: 300, alignSelf:'center', justifyContent:'center'}} >
-          <Button onPress={() => navigation.navigate('Signup')}
-          title="Or create an account here!"
-          />
+          <View style={[styles.container, {marginTop:'6%'}]}>
+            <Button onPress={() => navigation.navigate('Signup')}
+              title="Or create an account here!"
+              />
           </View>
-      </View>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
@@ -41,21 +48,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  inputContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '5%',
+    height: '8%',
+    marginBottom: '10%',
+    borderWidth: 1, 
+    borderColor: '#dfdfdf',
+  },
   image: {
     width: 400,
     height: 250,
     marginVertical: 10
   },
   textTitle: {
-    fontFamily: 'Foundation',
-    fontSize: 40,
-    marginVertical: 10,
-    alignSelf:'center'
+    fontSize: 40
   },
   textBody: {
-    fontFamily: 'Foundation',
-    fontSize: 16,
-    alignSelf:'center'
-  }
+    fontSize: 16
+  },
+  textInput: {
+    height: '20%',
+    borderColor: "#000000",
+    borderBottomWidth: 1,
+    marginTop: '2%'
+  },
+  inputView: {
+    borderRadius: 30,
+    width: "60%",
+    height: 45,
+    marginBottom: 20,
+    shadowOffset: {
+        width: 0,
+        height: 2,
+    },
+    shadowOpacity: 0.25,
+    elevation: 5,
+}
 
 });
