@@ -169,7 +169,7 @@ export const uploadImage = async (uri: string) => {
   try {
     const response = await fetch(uri);
     const blob = await response.blob();
-    const foodStorageRef = ref(storage, `${getCurrentUserUid()}/uuid()`)
+    const foodStorageRef = ref(storage, `${getCurrentUserUid()}/${uuid()}`)
     const usedRef = await uploadBytes(foodStorageRef, blob).then((snapshot) => {
       console.info('Uploaded Image!')
       return snapshot.ref
