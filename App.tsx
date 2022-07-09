@@ -9,7 +9,7 @@ import Login from './src/pages/Login';
 
 type RootStackParamList = {
   Home: { userId: string };
-  Foodinput: undefined;
+  FoodInput: undefined;
   Login: undefined;
   Signup: undefined;
 };
@@ -21,10 +21,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login}/>
-        <Stack.Screen name="Signup" component={Signup}/>
-        <Stack.Screen name="Home" component={HomePage}/>
-        <Stack.Screen name="Foodinput" component={FoodInput}/>
+        <Stack.Screen name={LOGIN_ROUTE} component={Login}/>
+        <Stack.Screen name={SIGNUP_ROUTE} component={Signup}/>
+        <Stack.Screen name={HOMEPAGE_ROUTE} component={HomePage}/>
+        <Stack.Screen name={FOODINPUT_ROUTE} component={FoodInput}/>
       </Stack.Navigator>
     </NavigationContainer>
     
