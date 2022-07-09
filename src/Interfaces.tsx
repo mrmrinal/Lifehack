@@ -1,20 +1,53 @@
 // TypeScript needs interfaces for any data type
 
-import { DocumentData } from "firebase/firestore"
+import { DocumentData, DocumentSnapshot } from "firebase/firestore";
 
-export interface UserInStore {
-    name: string
-    email: string
+export interface UserInStore extends DocumentData {
+  name: string;
+  email: string;
+}
+
+export const userInStoreConverter = {
+    toFirestore: (user: UserInStore): UserInStore => {
+        return ({
+            name: user.name,
+            email: user.email
+            })
+    },
+    fromFirestore: (userSnapshot: any): UserInStore => {
+        const userData = userSnapshot.data();
+        return {
+            name: userData.name,
+            email: userData.email,
+        }
+    }
 }
 
 export interface FoodItem {
-    fid: string
-    expiry: Date
-    name: string
-    photoUrl?: string
+  //TODO: Add fid
+  expiry: Date
+  name: string
+  quantity: number
+  photoUrl?: string
 }
 
 export interface UserFoodItem extends DocumentData {
-    householdName: string
-    foodItems: FoodItem[]
+  householdName: string;
+  foodItems: FoodItem[];
+}
+
+export const userFoodItemConverter = {
+    toFirestore: (userFoodItem: UserFoodItem): UserFoodItem => {
+        return ({
+            householdName: userFoodItem.householdName,
+            foodItems: userFoodItem.foodItems,
+            })
+    },
+    fromFirestore: (userSnapshot: any): UserFoodItem => {
+        const userData = userSnapshot.data();
+        return {
+            householdName: userData.householdName,
+            foodItems: userData.foodItems,
+        }
+    }
 }
