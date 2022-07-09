@@ -4,12 +4,32 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Camera } from 'expo-camera';
 import { ShareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library'
+import { StatusBar } from 'expo-status-bar';
 
 export default function FoodInput() {
-    const [name, setName] = useState('');
     const [date, setDate] = useState(new Date());
     const [dateText, setDateText] = useState('Select the expiry date') 
     const [foodName, setFoodName] = useState('');
+
+    let cameraRef = useRef();
+    const [hasCameraPermission, setHasCameraPermission] = useState();
+    const [hasGalleryPermission, setHasGalleryPermission] = useState();
+    const [photo, setPhoto] = useState();
+
+    useEffect(() => {
+        (async () => {
+            const cameraPermission = await Camera.requestCameraPermissionsAsync();
+            const galleryPermission = await MediaLibrary.requestPermissionsAsync();
+            setHasCameraPermission(cameraPermission.status === "granted");
+            setHasGalleryPermission(galleryPermission.status === "granted");
+        })();
+    }, [])
+
+    if (hasCameraPermission === undefined) {
+        return <Text>Requesting permissions... </Text>
+    } else if (hasCameraPermission === false) {
+        return <Text>Permission Denied. Change in settings</Text>
+    } 
 
     const onChange = (event:Event, selectedDate:Date) => {
         const currentDate:Date = selectedDate || date;
@@ -19,6 +39,17 @@ export default function FoodInput() {
         let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
         setDateText('Selected Date: ' + fDate)
     }
+
+    let takePic = async () => {
+        let options = {
+          quality: 1,
+          base64: true,
+          exif: false
+        };
+    
+        let newPhoto = await cameraRef.current.takePictureAsync(options);
+        setPhoto(newPhoto);
+    };
 
 
 
@@ -34,6 +65,7 @@ export default function FoodInput() {
                   placeholder="Name of the food Item"
                 />
                 <Text style={styles.fieldTitle}>{dateText}</Text> 
+
                 <DateTimePicker
                     testID='datePicker'
                     value={date}
@@ -41,6 +73,24 @@ export default function FoodInput() {
                     mode='date'
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                 />
+
+
+                <View style={styles.viewPaired}>
+                    <View style={styles.twoButtonContainer}>
+                      <Button title="Take a Picture"/>
+                    </View>
+                    <View style={styles.twoButtonContainer}>
+                      <Button title="Upload a Picture"/>
+                    </View>
+                </View>
+
+                
+                {/* <Camera ref={cameraRef}>
+                  <View style={styles.buttonContainer}>
+                    <Button title="Take Pic" onPress={takePic} />
+                  </View>
+                  <StatusBar style="auto" />
+                </Camera> */}
             </View>
 
 
@@ -83,5 +133,18 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignContent:'center',
         alignSelf:'center'
-      }
+    },  
+    buttonContainer: {
+        backgroundColor: '#fff',
+        alignSelf: 'flex-end'
+    },
+    viewPaired: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    twoButtonContainer: {
+        flex: 1,
+    }
+    
   });
