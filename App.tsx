@@ -1,19 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/pages/HomePage';
+import HomePage from './src/pages/HomePage';
 import FoodInput from './src/pages/FoodInput';
 
-const Stack = createStackNavigator()
+type RootStackParamList = {
+  Home: { userId: string };
+  Foodinput: undefined;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.screen name="Home" component={HomeScreen}/>
-        <Stack.screen name="Foodinput" component={FoodInput}/>
+        <Stack.Screen name="Home" component={HomePage}/>
+        <Stack.Screen name="Foodinput" component={FoodInput}/>
       </Stack.Navigator>
     </NavigationContainer>
     

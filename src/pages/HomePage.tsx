@@ -1,8 +1,8 @@
 // This is where they will see the feed and stuff
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-export default function HomeScreen() {
+export default function HomePage() {
     return (
         <View style={styles.container}>
             <Text>This is the home screen</Text>
