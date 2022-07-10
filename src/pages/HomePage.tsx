@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, FlatList, Button } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Greeter from '../components/greeter'
 import styles from '../styles/styles'
 import CustomInput from '../components/customInput'
@@ -8,6 +8,8 @@ import Category from '../components/category'
 import Transaction from '../components/recipes'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
+import { getName } from '../firebase/FirebaseApi'
+import { FOODINPUT_ROUTE } from '../AppConstants'
 
 export default function HomeScreen()  {
   return (

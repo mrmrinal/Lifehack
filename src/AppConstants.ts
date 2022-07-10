@@ -6,4 +6,4 @@ export const FOODS_COLLECTION_ID = "foods";
 export const HOMEPAGE_ROUTE = "Home"
 export const SIGNUP_ROUTE = "Signup"
 export const LOGIN_ROUTE = "Login"
-export const FOODINPUT_ROUTE = "FoodInput"
+export const FOODINPUT_ROUTE = "Foodinput"

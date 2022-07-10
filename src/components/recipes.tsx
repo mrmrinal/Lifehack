@@ -4,7 +4,7 @@ import colors from '../constants/colors'
 import values from '../constants/values'
 import CustomButton from './customButton'
 
-const Transaction = ({transaction, onPress}) => {
+ const Transaction = ({transaction, onPress}) => {
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
