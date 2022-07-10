@@ -11,12 +11,19 @@ import {
   DocumentData,
   Unsubscribe,
   runTransaction,
+  arrayUnion,
+  setDoc,
 } from "firebase/firestore";
 // Authentication
-import { getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
+// Storage
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 // API Key
 import { firebaseConfig } from "../../Constants";
+// Misc
 import { UserInStore, FoodItem, UserFoodItem, userInStoreConverter, userFoodItemConverter } from "../Interfaces";
+import { FOODS_COLLECTION_ID, USERS_COLLECTION_ID } from "../AppConstants";
+import { v4 as uuid } from 'uuid';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -29,10 +36,16 @@ const db = getFirestore(app);
 const foodsRef = (uid: string) => doc(db, FOODS_COLLECTION_ID, uid).withConverter(userFoodItemConverter);
 
 // Reference to Users Collection
-const usersRef = doc(db, USERS_COLLECTION_ID).withConverter(userInStoreConverter)
+const usersRef = (uid: string) => doc(db, USERS_COLLECTION_ID, uid).withConverter(userInStoreConverter)
 
 // Collections need a doc inside them always
 // Get uid from auth
+
+//-------------------Firebase Auth References-------------------
+const auth = getAuth()
+
+//-------------------Firebase Storage References-------------------
+const storage = getStorage()
 
 //-------------------Firestore Foods Methods-------------------
 
@@ -46,32 +59,19 @@ const usersRef = doc(db, USERS_COLLECTION_ID).withConverter(userInStoreConverter
 async function addAuthenticatedUserAfterSignup(
   uid: string,
   user: UserInStore
-): Promise<boolean> {
+) {
   const { name, email } = user;
 
   // Add to users and create food items table
-  const responses = await Promise.allSettled([
-    addDoc(collection(db, USERS_COLLECTION_ID, uid), {
+  await setDoc(doc(db, USERS_COLLECTION_ID, uid), {
       name: name,
-      uid: uid,
       email: email,
-    }),
-    addDoc(collection(db, FOODS_COLLECTION_ID, uid), {
-      householdName: `${name}'s House`,
+    })
+    await setDoc(doc(db, FOODS_COLLECTION_ID, uid), {
+      householdName: `${name}'s house`,
       foodItems: [], // Should be of type FoodItem
-    }),
-  ]);
-
-  // Log Errors if any
-  responses.forEach((resp) => {
-    if (resp.status === "rejected") {
-      console.error(resp.reason);
-      return false
-    }
-  });
-
-  return true
-}
+    })
+  }
 
 /**
  * Returns a Promise containing the UserInStore data.
@@ -79,10 +79,20 @@ async function addAuthenticatedUserAfterSignup(
  * @param uid User's unique ID from auth.
  * @returns Promise containing UserInStore for corresponding uid.
  */
-async function getUserFromStore(uid: string): Promise<DocumentData | void | undefined> {
-  return getDoc(doc(db, USERS_COLLECTION_ID, uid))
-    .then((doc) => doc.data())
-    .catch(console.error);
+export async function getUserFromStore(): Promise<UserInStore | void | undefined> {
+  const uid = getCurrentUserUid()
+  if (uid) {
+    return getDoc(usersRef(uid))
+      .then((doc) => doc.data())
+      .catch(console.error);
+  } else {
+    return Promise.reject(undefined)
+  }
+}
+
+export async function getName(): Promise<string | undefined> {
+  const user = await getUserFromStore()
+  return user?.name
 }
 
 /**
@@ -94,23 +104,24 @@ async function getUserFromStore(uid: string): Promise<DocumentData | void | unde
  */
 async function getFoodItemsByUser(
   uid: string,
-  onNext: (userFoodItem?: DocumentData) => void
+  onNext: (userFoodItem?: UserFoodItem) => void
 ): Promise<Unsubscribe> {
-  const unsubFunc = onSnapshot(doc(db, FOODS_COLLECTION_ID, uid), (doc) => {
+  const unsubFunc = onSnapshot(foodsRef(uid), (doc) => {
     onNext(doc.data());
   });
   return unsubFunc;
 }
 
-async function addFoodItemToUser (uid: string, foodItem: FoodItem) {
+export async function addFoodItemToUser (uid: string, foodItem: FoodItem) {
   await runTransaction(db, async (transaction) => {
     const userFoodItemSnap = await transaction.get(foodsRef(uid))
     const userFoodItem = userFoodItemSnap.data()
 
-    if (userFoodItem) {
+    if (userFoodItem !== undefined) {
       const foodItemList = userFoodItem.foodItems
       const newFoodItemList = foodItemList.concat([foodItem])
-      transaction.update(foodsRef(uid), {foodItems: newFoodItemList})
+      console.table(newFoodItemList)
+      transaction.update(foodsRef(uid), {foodItems: arrayUnion(foodItem)})
     }
   })
   .then((_resp) => {})
@@ -130,4 +141,59 @@ async function deleteFoodItemFromUser (uid: string, foodItem: FoodItem) {
   })
   .then((_resp) => {})
   .catch(console.error)
+}
+
+//-------------------Firestore Auth Methods-------------------
+/**
+ * Logs the user in.
+ * 
+ * @param email User's email.
+ * @param password User's password.
+ * @param success_callback Callback if successful login
+ */
+export const login = async(email: string, password: string, success_callback: (userCred: UserCredential) => void) => {
+  await signInWithEmailAndPassword(auth, email, password)
+    .then(success_callback)
+}
+
+/**
+ * Registers new user
+ * @param name 
+ * @param email 
+ * @param password 
+ * @param success Callback if successful sign-up. 
+ */
+export const signUp = async (name: string, email: string, password: string, success?: (user: UserCredential) => void) => {
+  await createUserWithEmailAndPassword(auth, email, password)
+  .then(async (user: UserCredential) => {
+    await addAuthenticatedUserAfterSignup(
+      user.user.uid,
+      {
+      email: email,
+      name: name,
+    })
+  .then(() => success?.(user))
+  })
+}
+
+export function getCurrentUserUid (): string | undefined {
+  return auth.currentUser?.uid
+}
+
+//-------------------Firestore Storage Buckets Methods-------------------
+export const uploadImage = async (uri: string) => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const foodStorageRef = ref(storage, `${getCurrentUserUid()}/${uuid()}`)
+    const usedRef = await uploadBytes(foodStorageRef, blob).then((snapshot) => {
+      console.info('Uploaded Image!')
+      return snapshot.ref
+    }).catch(console.error);
+
+    return getDownloadURL(foodStorageRef).then(url => url).catch(console.error)
+
+  } catch (err: any) {
+    console.error('uploadImage error: ' + err.message); 
+  }
 }
