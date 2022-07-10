@@ -9,7 +9,6 @@ import Signup from './src/pages/Signup';
 import Login from './src/pages/Login';
 
 
-
 type RootStackParamList = {
   Home: { userId: string };
   Foodinput: undefined;
