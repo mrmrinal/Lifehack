@@ -102,14 +102,14 @@ export async function getName(): Promise<string | undefined> {
  * @param onNext Function that will handle whenever a new snapshot is available.
  * @returns An unsubscribe function that should be called to clean up the listener.
  */
-async function getFoodItemsByUser(
-  uid: string,
+export async function getFoodItemsByUser(
   onNext: (userFoodItem?: UserFoodItem) => void
 ): Promise<Unsubscribe> {
-  const unsubFunc = onSnapshot(foodsRef(uid), (doc) => {
+  const uid = getCurrentUserUid()
+  const unsubFunc = uid && onSnapshot(foodsRef(uid), (doc) => {
     onNext(doc.data());
   });
-  return unsubFunc;
+  return unsubFunc ? unsubFunc : Promise.reject("Subscription Failed");
 }
 
 export async function addFoodItemToUser (uid: string, foodItem: FoodItem) {

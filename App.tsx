@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/pages/HomePage';
 import FoodInput from './src/pages/FoodInput';
-import FoodItems from './src/pages/foodItems';
+import FoodItems from './src/pages/FoodItems';
 import Signup from './src/pages/Signup';
 import Login from './src/pages/Login';
 

@@ -1,23 +1,29 @@
 // This is where they will see the feed and stuff
-import React from 'react';
+import { Unsubscribe } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { getFoodItemsByUser } from '../firebase/FirebaseApi';
+import { FoodItem } from '../Interfaces';
 
   const foodItems = [
 
     {
       id: 1,
       name: "Meji milk",
-      expiry_date: "16th July 2022",
+      expiry: new Date("02-08-2022"),
+      quantity: 2
     },
     {
       id: 2,
       name: "Tomatoes",
-      expiry_date: "05th August 2022",
+      expiry: new Date("02-10-2022"),
+      quantity: 2
     },
     {
       id: 3,
       name: "Nutella",
-      expiry_date: "23rd November 2023",
+      expiry: new Date("23-11-2023"),
+      quantity: 1
     },
   
   ];  
@@ -32,11 +38,25 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
   }
 
 export default function FoodItems() {
+  const [foodItemList, setFoodItemList] = useState<FoodItem[]>(foodItems)
+  const [unsub, setUnsub] = useState<Unsubscribe>()
+  useEffect(() => {
+    async function work() {
+      return await getFoodItemsByUser(foodItems => {
+        if (foodItems?.foodItems) {
+          setFoodItemList(foodItems.foodItems)
+        }
+      }).then(unsub => setUnsub(unsub))
+    } 
+    work()
+    return unsub
+  }, [])
+  
     return (
         <View style={styles.container}>
             <Text>This is the home screen</Text>
-            <FlatList data = {foodItems} renderItem = {({item}) => (
-                <Item name = {item.name} expiry_date = {item.expiry_date} />
+            <FlatList data = {foodItemList} renderItem = {({item}) => (
+                <Item name = {item.name} expiry_date = {item.expiry} />
             )}/>
         </View>
     )
