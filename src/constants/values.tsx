@@ -12,11 +12,13 @@ const values = {
     pStyle: {
         color: 'grey',
         fontSize: 12,
+        
     },
     pWhiteStyle: {
         //color: 'white',
         fontSize: 12,
-    }
+    },
+    
 }
 
 export default values;

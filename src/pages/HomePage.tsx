@@ -29,7 +29,7 @@ export default function HomeScreen()  {
               title="Add food"
               />
             </View>
-            <Spacer height={20} />
+          <Spacer height={20} />
         </View>
         <View style={{paddingLeft: values.horizontalPadding}}>
             <FlatList
@@ -62,4 +62,3 @@ export default function HomeScreen()  {
     </SafeAreaView>
   )
 }
-
