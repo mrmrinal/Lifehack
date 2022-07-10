@@ -13,7 +13,7 @@ const Transaction = ({transaction, onPress}) => {
           </View>
           <View>
               <Text style={values.pStyle}>{transaction.heading}</Text>
-              <Text style={values.h2Style}>-{transaction.price}</Text>
+              <Text style={values.h2Style}>{transaction.price}</Text>
           </View>
       </View>
       <CustomButton 
@@ -59,5 +59,6 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: 20,
-    }
+    },
+
 })

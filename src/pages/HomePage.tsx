@@ -5,9 +5,10 @@ import styles from '../styles/styles'
 import CustomInput from '../components/customInput'
 import Spacer from '../components/spacer'
 import Category from '../components/category'
-import Transaction from '../components/transaction'
+import Transaction from '../components/recipes'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
+import { color } from 'react-native-reanimated'
 
 export default function HomeScreen()  {
   return (
