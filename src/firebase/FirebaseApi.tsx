@@ -11,6 +11,8 @@ import {
   DocumentData,
   Unsubscribe,
   runTransaction,
+  arrayUnion,
+  setDoc,
 } from "firebase/firestore";
 // Authentication
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, UserCredential } from "firebase/auth";
@@ -55,17 +57,18 @@ const storage = getStorage()
  * @returns A promise containing a boolean that returns true if no errors occurred in the process.
  */
 async function addAuthenticatedUserAfterSignup(
+  uid: string,
   user: UserInStore
 ) {
   const { name, email } = user;
 
   // Add to users and create food items table
-  await addDoc(collection(db, USERS_COLLECTION_ID), {
+  await setDoc(doc(db, USERS_COLLECTION_ID, uid), {
       name: name,
       email: email,
     })
-  await addDoc(collection(db, FOODS_COLLECTION_ID), {
-      householdName: `${name}'s House`,
+    await setDoc(doc(db, FOODS_COLLECTION_ID, uid), {
+      householdName: `${name}'s house`,
       foodItems: [], // Should be of type FoodItem
     })
   }
@@ -76,10 +79,20 @@ async function addAuthenticatedUserAfterSignup(
  * @param uid User's unique ID from auth.
  * @returns Promise containing UserInStore for corresponding uid.
  */
-async function getUserFromStore(uid: string): Promise<UserInStore | void | undefined> {
-  return getDoc(usersRef(uid))
-    .then((doc) => doc.data())
-    .catch(console.error);
+export async function getUserFromStore(): Promise<UserInStore | void | undefined> {
+  const uid = getCurrentUserUid()
+  if (uid) {
+    return getDoc(usersRef(uid))
+      .then((doc) => doc.data())
+      .catch(console.error);
+  } else {
+    return Promise.reject(undefined)
+  }
+}
+
+export async function getName(): Promise<string | undefined> {
+  const user = await getUserFromStore()
+  return user?.name
 }
 
 /**
@@ -99,15 +112,16 @@ async function getFoodItemsByUser(
   return unsubFunc;
 }
 
-async function addFoodItemToUser (uid: string, foodItem: FoodItem) {
+export async function addFoodItemToUser (uid: string, foodItem: FoodItem) {
   await runTransaction(db, async (transaction) => {
     const userFoodItemSnap = await transaction.get(foodsRef(uid))
     const userFoodItem = userFoodItemSnap.data()
 
-    if (userFoodItem) {
+    if (userFoodItem !== undefined) {
       const foodItemList = userFoodItem.foodItems
       const newFoodItemList = foodItemList.concat([foodItem])
-      transaction.update(foodsRef(uid), {foodItems: newFoodItemList})
+      console.table(newFoodItemList)
+      transaction.update(foodsRef(uid), {foodItems: arrayUnion(foodItem)})
     }
   })
   .then((_resp) => {})
@@ -152,7 +166,9 @@ export const login = async(email: string, password: string, success_callback: (u
 export const signUp = async (name: string, email: string, password: string, success?: (user: UserCredential) => void) => {
   await createUserWithEmailAndPassword(auth, email, password)
   .then(async (user: UserCredential) => {
-    await addAuthenticatedUserAfterSignup({
+    await addAuthenticatedUserAfterSignup(
+      user.user.uid,
+      {
       email: email,
       name: name,
     })
@@ -160,7 +176,7 @@ export const signUp = async (name: string, email: string, password: string, succ
   })
 }
 
-function getCurrentUserUid (): string | undefined {
+export function getCurrentUserUid (): string | undefined {
   return auth.currentUser?.uid
 }
 
@@ -173,8 +189,10 @@ export const uploadImage = async (uri: string) => {
     const usedRef = await uploadBytes(foodStorageRef, blob).then((snapshot) => {
       console.info('Uploaded Image!')
       return snapshot.ref
-    })
-    return await getDownloadURL(usedRef)
+    }).catch(console.error);
+
+    return getDownloadURL(foodStorageRef).then(url => url).catch(console.error)
+
   } catch (err: any) {
     console.error('uploadImage error: ' + err.message); 
   }
