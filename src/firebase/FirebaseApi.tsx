@@ -19,7 +19,7 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, Us
 // Storage
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 // API Key
-import { firebaseConfig } from "../../constants";
+import { firebaseConfig } from "../../Constants";
 // Misc
 import { UserInStore, FoodItem, UserFoodItem, userInStoreConverter, userFoodItemConverter } from "../Interfaces";
 import { FOODS_COLLECTION_ID, USERS_COLLECTION_ID } from "../AppConstants";

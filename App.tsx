@@ -14,6 +14,7 @@ type RootStackParamList = {
   Foodinput: undefined;
   Login: undefined;
   Signup: undefined;
+  FoodItems: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -27,6 +28,7 @@ export default function App() {
         <Stack.Screen name="Signup" component={Signup}/>
         <Stack.Screen name="Home" component={HomeScreen}/>
         <Stack.Screen name="Foodinput" component={FoodInput}/>
+        <Stack.Screen name="FoodItems" component={FoodItems}/>
       </Stack.Navigator>
     </NavigationContainer>
     

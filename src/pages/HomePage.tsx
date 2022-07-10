@@ -9,9 +9,9 @@ import Transaction from '../components/recipes'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
 import { getName } from '../firebase/FirebaseApi'
-import { FOODINPUT_ROUTE } from '../AppConstants'
+import { FOODINPUT_ROUTE, FOODITEMS_ROUTE } from '../AppConstants'
 
-export default function HomeScreen()  {
+export default function HomeScreen({ navigation })  {
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.horizontalPaddingView}>
@@ -39,6 +39,7 @@ export default function HomeScreen()  {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <Category category={item} onPress={(val) => console.warn(`Clicked ${val}`)} />}
             />
+            <Button title="Inventory" onPress={() => navigation.navigate(FOODITEMS_ROUTE)}/>
         </View>
 
         <View style={styles.horizontalPaddingView}>
