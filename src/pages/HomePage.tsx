@@ -40,7 +40,6 @@ export default function HomeScreen()  {
             <Text style={values.h2Style}>Recipes</Text>
             <Spacer height={20} />
             <FlatList
-                
                 data={transactions}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id}
