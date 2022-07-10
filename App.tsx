@@ -22,7 +22,7 @@ StatusBar.setBarStyle('dark-content', true)
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown: false, gestureEnabled: false}}>
         <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Signup" component={Signup}/>
         <Stack.Screen name="Home" component={HomeScreen}/>
