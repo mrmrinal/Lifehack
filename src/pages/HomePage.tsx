@@ -1,11 +1,11 @@
-import { View, Text, SafeAreaView, FlatList } from 'react-native'
+import { View, Text, SafeAreaView, FlatList, Button } from 'react-native'
 import React from 'react'
 import Greeter from '../components/greeter'
 import styles from '../styles/styles'
 import CustomInput from '../components/customInput'
 import Spacer from '../components/spacer'
 import Category from '../components/category'
-import Transaction from '../components/transaction'
+import Transaction from '../components/recipes'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
 
@@ -21,9 +21,13 @@ export default function HomeScreen()  {
             <Spacer height={20}/>
             <CustomInput placeholder='Search' icon='search-outline' />
             <Spacer height={20} />
-            <Text style={values.h2Style}>Categories of food</Text>
+            <View style={{flexDirection: 'row',justifyContent: 'space-between',}}>
+                <Text style={values.h2Style}>Categories of food</Text>
+                <Button
+              title="Add food"
+              />
+            </View>
             <Spacer height={20} />
-
         </View>
         <View style={{paddingLeft: values.horizontalPadding}}>
             <FlatList
@@ -37,7 +41,12 @@ export default function HomeScreen()  {
 
         <View style={styles.horizontalPaddingView}>
             <Spacer height={20} />
-            <Text style={values.h2Style}>Recipes</Text>
+            <View style={{flexDirection: 'row',justifyContent: 'space-between',}}>
+                <Text style={values.h2Style}>Recipes</Text>
+                <Button
+              title="Add recipes"
+              />
+            </View>            
             <Spacer height={20} />
             <FlatList
                 

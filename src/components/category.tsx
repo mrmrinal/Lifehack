@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image } from 'react-native'
 import React from 'react'
 import values from '../constants/values'
+import { color } from 'react-native-reanimated'
 const { width } = Dimensions.get("screen")
 const Category = ({category, onPress}) => {
   return (
@@ -9,7 +10,8 @@ const Category = ({category, onPress}) => {
         <Image style={styles.image} source={category.img}/>
           
         <Text style={[values.h2Style, {marginTop: 10}]}>{category.heading}</Text>
-        <Text style={[values.pWhiteStyle, { textAlign: 'center', fontWeight: 'bold', marginTop: 5}]}>{category.paragraph}</Text>
+        <Text style={[values.pWhiteStyle, {
+            color: 'green', textAlign: 'center', fontWeight: 'bold', marginTop: 5}]}>{category.paragraph}</Text>
       </View>
     </TouchableOpacity>
   )

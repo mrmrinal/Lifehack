@@ -5,6 +5,8 @@ const categories = [
         heading: 'Milk',
         paragraph: '2 items will expire soon!',
         backgroundColor: '#F6AFB0',
+        expired: true,
+        color: 'red',
     },
     {
         id: 2,
@@ -12,6 +14,8 @@ const categories = [
         heading: 'Canned food',
         paragraph: '5 items will expire soon!',
         backgroundColor: '#80CEEE',
+        expired: true,
+        color: 'red',
     },
     {
         id: 3,
@@ -19,6 +23,8 @@ const categories = [
         heading: 'Vegetables',
         paragraph: 'All items are fine!',
         backgroundColor: '#8ECC81',
+        expired: false,
+        color: 'red',
     }
 ];
 

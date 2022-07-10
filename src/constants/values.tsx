@@ -14,7 +14,7 @@ const values = {
         fontSize: 12,
     },
     pWhiteStyle: {
-        color: 'white',
+        //color: 'white',
         fontSize: 12,
     }
 }
