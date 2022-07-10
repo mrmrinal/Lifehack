@@ -9,12 +9,17 @@ import Category from '../components/category'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
 import { getName } from '../firebase/FirebaseApi'
+import { FOODINPUT_ROUTE } from '../AppConstants'
 
 export default function HomeScreen({ navigation })  {
     const [name, setName] = useState<string>('')
     useEffect(() => {
-        setName(getName())
-    })
+        async function namer () {
+            const name = await getName()
+            return name
+        }
+        namer().then(name => name ? setName(name) :  'there!').catch(console.error)
+    }, [])
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.horizontalPaddingView}>
@@ -31,7 +36,7 @@ export default function HomeScreen({ navigation })  {
 
             </View>
             <View style={{paddingLeft: values.horizontalPadding}}>
-                <Button title="Add Food Item" onPress={navigation.navigate("Foodinput")}/>
+                <Button title="Add Food Item" onPress={() => navigation.navigate(FOODINPUT_ROUTE)}/>
                 <FlatList
                     horizontal
                     data={categories}
