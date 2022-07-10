@@ -9,9 +9,10 @@ import Transaction from '../components/recipes'
 import values from '../constants/values'
 import { categories, transactions } from '../constants/data'
 import { getName } from '../firebase/FirebaseApi'
-import { FOODINPUT_ROUTE, FOODITEMS_ROUTE } from '../AppConstants'
+import { FOODITEMS_ROUTE } from '../AppConstants'
 
 export default function HomeScreen({ navigation })  {
+    
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.horizontalPaddingView}>

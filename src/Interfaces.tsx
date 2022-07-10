@@ -25,7 +25,7 @@ export const userInStoreConverter = {
 
 export interface FoodItem {
   //TODO: Add fid
-  expiry: Date
+  expiry: string
   name: string
   quantity: number
   photoUrl?: string

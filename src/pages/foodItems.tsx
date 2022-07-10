@@ -5,24 +5,31 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import { getFoodItemsByUser } from '../firebase/FirebaseApi';
 import { FoodItem } from '../Interfaces';
 
+    const dateFunc = (tempDate: Date) => 
+    tempDate.getDate() +
+    "/" +
+    (tempDate.getMonth() + 1) +
+    "/" +
+    tempDate.getFullYear()
+
   const foodItems = [
 
     {
       id: 1,
-      name: "Meji milk",
-      expiry: new Date("02-08-2022"),
+      name: "Meiji milk",
+      expiry: dateFunc(new Date("02-08-2022")),
       quantity: 2
     },
     {
       id: 2,
       name: "Tomatoes",
-      expiry: new Date("02-10-2022"),
+      expiry: dateFunc(new Date("02-10-2022")),
       quantity: 2
     },
     {
       id: 3,
       name: "Nutella",
-      expiry: new Date("23-11-2023"),
+      expiry: dateFunc(new Date("23-11-2023")),
       quantity: 1
     },
   
@@ -55,9 +62,13 @@ export default function FoodItems() {
     return (
         <View style={styles.container}>
             <Text>This is the home screen</Text>
-            <FlatList data = {foodItemList} renderItem = {({item}) => (
-                <Item name = {item.name} expiry_date = {item.expiry} />
-            )}/>
+            <View>
+                {foodItemList &&
+            foodItemList.map(item => 
+                (<Item name={item.name} expiry_date={item.expiry}/>)
+            )
+            }
+            </View>
         </View>
     )
 }
